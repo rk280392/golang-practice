@@ -5,3 +5,12 @@ VERSION-1
 ############
 
 This port scanner scans port on scanme.nmap.org. Prints if port connection was successful or not
+
+############
+VERSION-2
+############
+
+This port scanner scans ports on scanme.nmap.org. Prints if port connection was successful or not
+It checks for all the ports from 1 to 1024 with simple for loop. It checks one by one and is
+very slow. 
+
