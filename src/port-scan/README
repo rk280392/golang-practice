@@ -14,3 +14,13 @@ This port scanner scans ports on scanme.nmap.org. Prints if port connection was 
 It checks for all the ports from 1 to 1024 with simple for loop. It checks one by one and is
 very slow. 
 
+############
+VERSION-3
+############
+
+This port scanner scans ports on scanme.nmap.org. Prints if port connection was successful or not
+This version launches single go routine per connection, and the main go routine doesn't know to wait
+for main connection to take place. Therefore, the code completes and exists as soon as the for loop 
+finishes the iterations, which may be faster than the network exchange of packets between the code and 
+target ports. We may not get accurate results for ports whose packets were still in-flight.
+Let's try fixing this in new version.
