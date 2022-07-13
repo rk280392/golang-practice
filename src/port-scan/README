@@ -1,0 +1,7 @@
+This is simple port scanner using go
+
+############
+VERSION-1
+############
+
+This port scanner scans port on scanme.nmap.org. Prints if port connection was successful or not
