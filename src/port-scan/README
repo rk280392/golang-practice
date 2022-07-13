@@ -26,7 +26,7 @@ target ports. We may not get accurate results for ports whose packets were still
 Let's try fixing this in new version.
 
 ############
-VERSION-3
+VERSION-4
 ############
 
 This port scanner scans ports on scanme.nmap.org. Prints if port connection was successful or not.
