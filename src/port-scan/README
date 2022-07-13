@@ -39,3 +39,6 @@ counter by one. Finally, Wait() blocks the execution of the goroutine in which i
 and will not allow further execution until the internal counter reaches zero. You can
 combine these calls to ensure that the main goroutine waits for all connections to finish.
 
+This version of the program is better, but still incorrect. If run this multiple times against 
+multiple hosts, we might see inconsistent results. Scanning an excessive number of hosts or ports 
+simultaneously may cause network or system limitations to skew your results
