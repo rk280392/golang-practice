@@ -1,28 +1,69 @@
 package main
 
 import (
-   "fmt"
-   "net"
-   "sync"
+	"fmt"
+	"net"
+	"sort"
+	"strings"
+	"time"
 )
 
-func main(){
-   var wg sync.WaitGroup //WaitGroup is a struct type and acts as a synchronized counter 
-   for i:=1; i<=1024;i++ {
-      wg.Add(1) // increment counter via wg.Add(1) each time a goroutine is created to scan a port
-      go func(j int) {
-         defer wg.Done() // decrements the counter whenever one unit of work has been performed 
-         address := fmt.Sprintf("scanme.nmap.org:%d", j)
-         conn,err := net.Dial("tcp",address)
-         if err != nil {
-            fmt.Printf("port %v is not open\n",j)
-            return
-         } else {
-            conn.Close()
-            fmt.Printf("Connection was successful on port %v\n",j)
-         }
-      }(i)
-   }
-   // main() function calls wg.Wait(), which blocks until all the work has been done and your counter has returned to zero
-   wg.Wait()
+func printProgressBar(iteration, total int, prefix, suffix string, length int, fill string) {
+	percent := int64(float64(iteration) / float64(total) * 100)
+	filledLength := int(length * iteration / total)
+	end := ">"
+	if iteration == total {
+		end = "="
+	}
+	bar := strings.Repeat(fill, filledLength) + end + strings.Repeat("-", (length-filledLength))
+	fmt.Printf("\r%s [%s] %d%% %s", prefix, bar, percent, suffix)
+	if iteration == total {
+		fmt.Println()
+	}
+}
+
+func worker(ports, results chan int) {
+	for p := range ports {
+		address := fmt.Sprintf("scanme.nmap.org:%d", p)
+		conn, err := net.Dial("tcp", address)
+		if err != nil {
+			results <- 0
+			continue
+		}
+		conn.Close()
+		results <- p
+	}
+}
+
+func main() {
+	ports := make(chan int, 300)
+	results := make(chan int)
+	var openports []int
+	totalPorts := 1024
+
+	for i := 0; i < cap(ports); i++ {
+
+		go worker(ports, results)
+	}
+	go func() {
+		for i := 1; i <= totalPorts; i++ {
+			ports <- i
+		}
+	}()
+
+	for i := 0; i < totalPorts; i++ {
+		port := <-results
+		if port != 0 {
+			openports = append(openports, port)
+		}
+		time.Sleep(100 * time.Millisecond) // mimics work
+		printProgressBar(i+1, totalPorts, "Progress", "Complete", 100, "=")
+	}
+	close(ports)
+	close(results)
+
+	sort.Ints(openports)
+	for _, port := range openports {
+		fmt.Printf("%d open\n", port)
+	}
 }

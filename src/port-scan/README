@@ -42,3 +42,17 @@ combine these calls to ensure that the main goroutine waits for all connections 
 This version of the program is better, but still incorrect. If run this multiple times against 
 multiple hosts, we might see inconsistent results. Scanning an excessive number of hosts or ports 
 simultaneously may cause network or system limitations to skew your results
+
+
+############
+VERSION-5
+############
+This port scanner scans ports on scanme.nmap.org. Prints open ports.
+If the port is closed, send a zero and if it’s open, send the port.
+Also, creating a separate channel to communicate the results from the worker to the main thread. 
+Store the results into slice so you can sort them later. Next, sending to
+the workers in a separate goroutine because the result gathering loop needs to start before more 
+than 100 items of work can continue.
+The result-gathering loop receives on the results channel 1024 times. If the port doesn’t equal 0, it’s appended to the
+slice. After closing the channels,  sort the slice of open ports. All that’s left is to loop over the slice and
+print the open ports to screen.
