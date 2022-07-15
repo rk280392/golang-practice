@@ -42,7 +42,6 @@ func main() {
 	totalPorts := 1024
 
 	for i := 0; i < cap(ports); i++ {
-
 		go worker(ports, results)
 	}
 	go func() {

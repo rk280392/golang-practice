@@ -1,45 +1,43 @@
 package main
 
 import (
-   "fmt"
-   "os"
+   "net"
    "log"
+   "io"
 )
 
-type FooReader struct{}
+func handler(src net.Conn) {
+   dst,err:=net.Dial("tcp","learningdevops.com:80")
+   if err != nil{
+      log.Fatalln("Unable to connect to our unreachable host")
+   }
+   log.Println("Redirected to the domain")
+   defer dst.Close()
 
-func (fooReader *FooReader) Read(b []byte)(int, error) {
-   fmt.Print("in>")
-   return os.Stdin.Read(b)
-}
-
-type FooWriter struct{}
-
-func (fooWriter *FooWriter) Write(b []byte)(int, error) {
-   fmt.Print("out>")
-   return os.Stdout.Write(b)
+   go func() {
+      if _,err:=io.Copy(dst,src); err != nil {
+         log.Fatalln(err)
+      }
+   }()
+   if _,err:=io.Copy(src,dst); err !=nil {
+      log.Fatalln(err)
+   }
 }
 
 func main() {
-   var (
-      reader FooReader
-      writer FooWriter
-   )
-   
-   input := make([]byte, 4096)
-
-   s,err := reader.Read(input)
+   listener,err := net.Listen("tcp",":80")
    if err != nil {
-      log.Fatalln("Unable to read data")
+      log.Fatalln("Unable to bind to port")
    }
+   log.Println("Listening on port")
 
-   fmt.Printf("Read %d bytes from stdin\n",s)
-
-   s,err = writer.Write(input)
-   if err != nil {
-      log.Fatalln("Unable to write data")
+   for {
+      conn,err := listener.Accept()
+      if err !=nil {
+         log.Fatalln("Unable to accept the connection")
+      }
+      log.Println("Connection accepted")
+      go handler(conn)
    }
-   fmt.Printf("Wrote %d bytes to stdout\n",s)
 }
-
 
