@@ -36,6 +36,8 @@ func getFloat(filename string) ([3]float64, error) {
 }
 
 func main() {
+
+	// using arrays isn't very convenient because of fixed size. Arrays cannot be resized. use slice instead
 	args := os.Args
 	if len(args) < 2 {
 		os.Exit(1)
