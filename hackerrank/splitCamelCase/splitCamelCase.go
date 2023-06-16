@@ -1,12 +1,11 @@
-package main
+package splitCamelCase
 
 import (
-	"fmt"
 	"strings"
 	"unicode"
 )
 
-func splitCamelCase(words string) string {
+func SplitCamelCase(words string) string {
 	var currentWord string
 	previousCharIsLower := false
 	var result []string
@@ -37,10 +36,4 @@ func splitCamelCase(words string) string {
 	}
 	return strings.Join(result, " ")
 
-}
-
-func main() {
-	input := "LargeSoftwareBook"
-	output := splitCamelCase(input)
-	fmt.Println(output)
 }
