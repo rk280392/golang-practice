@@ -23,3 +23,11 @@ func main() {
 	uniqueNumbers := findUnique(numbers)
 	fmt.Println(uniqueNumbers)
 }
+
+/*
+
+Explanation:
+
+	Make a map of numbers with key and value as the number and the frequency of the number.
+	Later check the map if frequency == 1, then it is a unique number. Store it in the slice.
+*/
