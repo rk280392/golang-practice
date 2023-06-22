@@ -43,4 +43,5 @@ Answer is 4
 This operation is reversible, meaning that if we XOR the result (4) with one of the operands (5 or 1), we will obtain the other operand. So the last result should be the unique number. 
 This method only works if other numbers work exactly twice.  If there are multiple unique numbers or an odd number of occurrences for any number, the XOR approach alone cannot find the unique number(s) correctly
 
+*/
 
